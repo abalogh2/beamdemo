@@ -2,14 +2,16 @@
 
 ## Introduction
 
-Thy Python project is demonstrating the basic capabilities of Beam 
+This Python project is demonstrating the basic capabilities of Beam 
 integrated with the following Google Cloud Platform (GCP) services:
 
 - Pub/Sub
 - BigQuery
 - Storage
 
-The Beam application itself is running on the local development 
+The application is receiving very simple records with name, age and 
+gender and performs various transformation on them long a Beam
+pipeline. The Beam application itself is running on the local development 
 computer. Using the GCP DataFlow version is not demonstrated here,
 though porting the complete solution to the GCP environment should 
 not be difficult.
@@ -27,11 +29,12 @@ Demonstrated features:
 - Setting up Python virtual environment with appropriate modules
 - Configuring a GCP environment and generating credential file
 - Running Beam locally (DirectRunner)
-- Setting up complex Beam pipelines
-- Using bounded (batch) and unbounded (streeming) modes
+- Setting up complex, branching Beam pipelines
+- Using bounded (batch) and unbounded (streaming) modes
 - Reading messages from Pub/Sub topic and from local memory
 - Checking messages via JSON templates
-- Using standard and custom ParDo, Map and lambda function transforms
+- Using standard and custom ParDo, Map transforms with dedicated
+  functions or with inline lambda functions.
 - Using side inputs with ParDo routines
 - Using multiple outputs with ParDo routines for error handling
 - Using windowing for handling aggregations in streaming mode
@@ -40,6 +43,9 @@ Implementing this demo might involve some costs on Google Cloud Platform,
 however it will not be more than a few dollars (possibly less than a dollar).
 See the Clean-up chapter at the end to delete all GCP resources after
 playing with this demo.
+
+Those who have some basic experience with Python and GCP could implement
+and run this demo application within half an hour.
 
 ## Basic directories
 
@@ -57,8 +63,11 @@ https://github.com/ghrasko/beamdemo
 
 ## Setting up the GCP environment
 
-(Project name and bucket name should be globally unique. 
-Replace xxxxxxxx with a unique string, perhaps with your user name)
+Perform the below configurations on the Google Cloud Console:
+https://console.cloud.google.com/
+
+Project name and bucket name should be globally unique. 
+Replace xxxxxxxx with a unique string, perhaps with your user name.
 
 ```
 Create new project (should be globally unique): 
