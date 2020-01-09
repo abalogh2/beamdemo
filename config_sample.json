@@ -1,0 +1,36 @@
+{
+    "localstore": {
+        "file_path_prefix": "C:\\dev\\beam\\data\\output",
+        "file_name_suffix": ".json"
+    },
+    "gc": {
+        "cred_file": "C:\\dev\\.auth\\beamdemo.json",
+        "project": "beamdemo-xxxxxxxx",
+        "job": "myjob",
+        "staging_location": "gs://beamdemo-xxxxxxxx/binaries",
+        "temp_location": "gs://beamdemo-xxxxxxxx/temp"
+    },
+    "beam": {
+        "runner": "DirectRunner",
+        "save_main_session": true,
+        "window_length": 60,
+        "window_offset": 0
+    },
+    "storage": {
+        "file_path_prefix": "gs://beamdemo-xxxxxxxx/people",
+        "file_name_suffix": ".lst",
+        "append_newline": true
+    },
+    "pubsub": {
+        "topic": "beamdemo"
+    },
+    "bigquery": {
+        "dataset": "beamdemo",
+        "table1": "gender_counts",
+        "schema1": "gender:STRING, count:INTEGER, window_start:TIMESTAMP, window_end:TIMESTAMP",
+        "table2": "filtered_messages",
+        "schema2": "processed:TIMESTAMP, name:STRING, age:INTEGER, gender:STRING",
+        "table_err": "error_log",
+        "schema_err": "processed:TIMESTAMP, error:STRING, details:STRING, data:STRING"
+    }
+}
