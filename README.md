@@ -162,12 +162,21 @@ gcloud pubsub topics publish beamdemo --message '{ "name": "Arsène", "age": 42,
 Messages might also be added manually on-by-one through the GCP Pub/Sub Console.
 
 Check BigQuery data tables by runing the following queries:
+
 ```
 select * from beamdemo.filtered_messages order by processed desc limit 20
+```
+![Contents of my filtered_messages table on BigQuery](https://github.com/ghrasko/beamdemo/blob/master/pics/bq-filtered-messages.jpg)
+```
 select * from beamdemo.gender_counts order by window_start desc limit 20
+```
+![Contents of my gender_counts table on BigQuery](https://github.com/ghrasko/beamdemo/blob/master/pics/bq-gender-counts.jpg)
+```
 select * from beamdemo.error_log order by processed desc limit 20
 ```
-Stop the application in the console by pressing Ctrl-C.
+![Contents of my error_log table on BigQuery](https://github.com/ghrasko/beamdemo/blob/master/pics/bq-error-log.jpg)
+
+After completing demoing, halt the application in the console by pressing Ctrl-C.
 
 ## Clean-up
 
