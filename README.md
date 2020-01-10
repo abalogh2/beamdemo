@@ -24,6 +24,11 @@ stores the results and error messages in BigQuery tables. It also
 writes the results to a Storage bucket, but due to system limitations
 that solution is not complete (see remarks at the end of this doc).
 
+Input data format is JSON:
+```
+{"name": "Joe", "age": 22, "gender": "M"}
+```
+
 Demonstrated features:
 
 - Setting up Python virtual environment with appropriate modules
@@ -47,6 +52,27 @@ playing with this demo.
 Those who have some basic experience with Python and GCP could implement
 and run this demo application within half an hour.
 
+## Implemented pipelines
+
+The simpler pipeline is not using any GCP functionalities. It reads hardwired
+data from memory and outputs the results on the console and into a local file.
+The data are processed in batch mode.
+
+![Local batch pipeline](https://github.com/ghrasko/beamdemo/blob/master/pics/local-flow.jpg)
+
+The more complex second pipeline is fetching the data from a Pub/Sub topic
+and implementing a streaming pipeline to process them. Outputs are sent to
+the console, to various BigQuery tables and to Storage bucket files.
+
+![GCP streaming pipeline](https://github.com/ghrasko/beamdemo/blob/master/pics/gcp-flow.jpg)
+
+The BigQuery output tables are as follows:
+
+- Age based filtered messages are stored in *beam.filtered_messages* table.
+- Aggregated results (counts by gender) are stored in *beamdemo.gender_counts* table.
+Aggregation records are stored for each time window whenever data arrives.
+- Message related error information (bad format etc.) is stored in *beamdemo.error.log* table.
+
 ## Basic directories
 
 We use two main directories during the demonstration:
@@ -63,9 +89,7 @@ https://github.com/ghrasko/beamdemo
 
 ## Setting up the GCP environment
 
-Perform the below configurations on the Google Cloud Console:
-https://console.cloud.google.com/
-
+Perform the below configurations on the [Google Cloud Console](https://console.cloud.google.com/).
 Project name and bucket name should be globally unique. 
 Replace xxxxxxxx with a unique string, perhaps with your user name.
 
@@ -99,7 +123,7 @@ is 3.7.5. On Unix environments and with alternative virtual environment
 managers the actual commands might be slightly different.
 
 We are using only two non-standard Python packages:
-- apache-beam[gcp]
+- apache-beam\[gcp\]
 - jsonschema
 
 The installation commands are as follows:
@@ -128,25 +152,26 @@ Edit config.json with the configured GCP parameters
 
 ## Running the demo
 
-[Activate the proper python virtual environment]
+Activate the proper python virtual environment
 ```
 >C:\Python\beam\Scripts\activate
 ```
-[For testing the app without GCP features run as follows]
+For testing the app without GCP features run as follows
 ```
 > (beam) cd C:\dev\beam
 > (beam) python subdemo.py --cfgfile config.json --pipeline local
 ```
-[For testing the app with the GCP features run as follows]
+For testing the app with the GCP features run as follows
 ```
 > (beam) python subdemo.py --cfgfile config.json --pipeline gcp
 ```
-Sending test message via the gcloud shell. Paste the below list to the cloud shell. 
-(https://cloud.google.com/sdk/gcloud/reference/pubsub/topics/publish)
+Send test messages via the [gcloud shell](https://cloud.google.com/sdk/gcloud/reference/pubsub/topics/publish). 
+Paste the below list to the cloud shell. Messages might also be added manually on-by-one through the GCP 
+Pub/Sub Console for further testing.
 
-The list contains 11 valid and 6 invalid messages. 6 of the 11 valid inputs are 
+The prepared list below contains 11 valid and 6 invalid messages. 6 of the 11 valid inputs are 
 about people younger than 20 years, so they will be included in the filtered list. 
-The gender ration is 3:3. This will be reported in the aggregated output. The
+The gender ratio is 3:3. This will be reported in the aggregated output. The
 messages will probably arrive during a single 1 minute window, though this is not
 certain as windows start at round minutes and not when the first message arrives.
 ```
@@ -168,8 +193,6 @@ gcloud pubsub topics publish beamdemo --message '{ "name": "Ярослав", "ag
 gcloud pubsub topics publish beamdemo --message '{ "name": "София", "age": 10, "gender": "F" }'
 gcloud pubsub topics publish beamdemo --message '{ "name": "Arsène", "age": 42, "gender": "m" }'
 ```
-Messages might also be added manually on-by-one through the GCP Pub/Sub Console.
-
 Check BigQuery data tables by runing the following queries:
 
 ```
@@ -200,23 +223,21 @@ gcloud projects delete beamdemo-xxxxxxxx
   Output is written correctly to temp files in temp directories. It is
   not clear logically how this should be working while streaming. Anyhow
   I was expecting that at least the output is written sequentially in a
-  single, final (not temporary) file. See this:
-  https://beam.apache.org/documentation/sdks/python-streaming/
-  'The Beam SDK for Python includes two I/O connectors that support 
+  single, final (not temporary) file. The [documentation writes](https://beam.apache.org/documentation/sdks/python-streaming/):
+  *'The Beam SDK for Python includes two I/O connectors that support 
   unbounded PCollections: Google Cloud Pub/Sub (reading and writing) and 
-  Google BigQuery (writing).'
+  Google BigQuery (writing).'*
 - id_label argument is not (yet?) supported in PubSub reads (for Python?)
 
 ## Further improvement possibilities
 
 The following improvements could be made on this demonstration:
 
-- Move Beam to GC (DataFlow)
-- More error handling. See for example:
-  https://beam.apache.org/contribute/ptransform-style-guide/#error-handling
+- Move Beam to GCP (DataFlow)
+- More error handling
 - Shifted windowing
-- Late ticket handling
+- Late data handling (requires source timestamped data and simulated delays)
 - Graceful termination (draining)
-- Pipeline options handling should be modernized (see warning when running)
+- Pipeline options handling should be modernized (see warning when running the code in the console)
 
 
