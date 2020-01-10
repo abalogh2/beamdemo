@@ -1,5 +1,11 @@
 """
-BEAM PIPELINE (streaming, GCP)
+Beam pipeline implementation
+
+The single function of this module implements a demo Beam stream pipeline.
+The pipeline reads messages from GCP Pub/Sub and outputs results to
+the console, BigQuery tables and Storage bucket files.
+
+Pipeline outline:
 
 [Read records]
 'Read from PubSub'
@@ -35,8 +41,8 @@ Data source:
 
 Data sinks:
     - Print to console
-    - GC BigQuery tables
-    - GC Storage file in bucket (but see known issues)
+    - GC BigQuery tables: filtered_messages, gender_counts, error_log
+    - GC Storage file in bucket
 """
 
 import os
@@ -153,12 +159,12 @@ def run_pipeline( cfg ):
         )
 
     # Alternative syntaxes for defining and running the pipeline
-    # Version 1:
+    # Version 1 (used in this pipeline implementation):
     # with beam.Pipeline(options=options) as p:
     #    p0 = (p | ...
     #    ...
     #
-    # Version 2: (but proper cleanup of resources should be chekced)
+    # Version 2: (Not widely tested. Proper cleanup of resources should be chekced)
     # p = beam.Pipeline(options=options)
     #     p0 = (p | ...
     #     ...

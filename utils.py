@@ -1,3 +1,9 @@
+"""
+This module performs configuration file reading with checking against 
+defined schema. On config file errors it halts the program with 
+appropriate error message.
+"""
+
 import json         # for config file load
 import jsonschema   # for checking config file content
 

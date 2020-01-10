@@ -1,3 +1,13 @@
+"""
+This module contains the pipeline transformation modules if those are not
+implemented as in-line lambda functions within the pipeline itself. ParDo
+transformations are implemented as classes, Map transformations are as
+functions.
+
+Both the batch (local) and the streaming (GCP) pipelines use transformations
+from this module.
+"""
+
 import copy                     # for deepcopy
 import json                     # for data import
 from datetime import datetime   # for timestamp

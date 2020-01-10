@@ -1,3 +1,11 @@
+"""
+This is the main module of the beam demo project. It checks command line
+arguments and calls either the batch (local) or streaming (GCP) pipeline.
+
+Only the batch processing example reaches the final code line. The stream
+model runs until the program is halted by pressing Ctrl-C on the console.
+"""
+
 import sys
 import argparse
 

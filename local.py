@@ -1,5 +1,11 @@
 """
-BEAM PIPELINE (batch, local)
+Beam pipeline implementation
+
+The single function of this module implements a demo Beam batch pipeline.
+The pipeline reads hardwired messages from memory and outputs results to
+the console and to a local file.
+
+Pipeline outline:
 
 [Read records]
 'Read list from memory'
@@ -32,7 +38,7 @@ from apache_beam.options.pipeline_options import GoogleCloudOptions
 import transform
 
 # ----------------------------------------------------------------------
-# Sample batch pipeline. Not using GC and running Beam locally.
+# Sample batch pipeline. Not using GCP and running Beam locally.
 
 def run_pipeline( cfg ):
     # --- Initialises the beam pipeline ---
